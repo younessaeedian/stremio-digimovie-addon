@@ -10,7 +10,6 @@
       type="text/css"
     />
     <style>
-      /* استایل‌ها بدون تغییر برای حفظ ظاهر زیبای شما */
       input,
       button,
       select,
@@ -25,6 +24,7 @@
         --text-main: #ffffff;
         --text-muted: #aaaaaa;
         --border: #333333;
+        --main-font: "Vazirmatn", sans-serif;
       }
       body {
         margin: 0;
@@ -41,6 +41,7 @@
           #1e1e1e 0%,
           #000000 100%
         );
+        flex-direction: column; /* برای قرارگیری فوتر در پایین باکس */
       }
       .login-container {
         background-color: var(--box-bg);
@@ -51,6 +52,7 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         border: 1px solid var(--border);
         text-align: center;
+        margin-bottom: 20px;
       }
       .logo-area {
         margin-bottom: 30px;
@@ -131,6 +133,38 @@
         padding: 10px;
         border-radius: 5px;
       }
+
+      /* استایل امضای توسعه‌دهنده */
+      .developer-credit {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 10px;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+      }
+      .developer-credit:hover {
+        opacity: 1;
+      }
+      .developer-credit a {
+        color: #eb830a;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .developer-credit .heart {
+        color: #e25555;
+        display: inline-block;
+        animation: heartbeat 1.5s infinite;
+      }
+
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
     </style>
   </head>
   <body>
@@ -183,6 +217,13 @@
       </div>
     </div>
 
+    <div class="developer-credit">
+      توسعه داده شده با <span class="heart">❤️</span> توسط
+      <a href="https://github.com/younessaeedian" target="_blank"
+        >یونس سعیدیان</a
+      >
+    </div>
+
     <script>
       document
         .getElementById("configForm")
@@ -194,7 +235,6 @@
           const btn = document.getElementById("submitBtn");
           const errorDisplay = document.getElementById("errorDisplay");
 
-          // پاک کردن خطاهای قبلی
           errorDisplay.style.display = "none";
           errorDisplay.innerText = "";
 
@@ -207,16 +247,12 @@
           btn.disabled = true;
 
           try {
-            console.log("Sending validation request...");
             const response = await fetch("/validate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ digiUser, digiPass }),
             });
 
-            console.log("Response status:", response.status);
-
-            // اگر سرور پاسخ ندهد یا خطای 404 بدهد
             if (!response.ok) {
               throw new Error(
                 `خطای سرور: ${response.status} ${response.statusText}`
@@ -224,21 +260,16 @@
             }
 
             const result = await response.json();
-            console.log("Result:", result);
 
             if (result.success) {
-              // موفقیت آمیز -> ریدارکت به استریمیو
               const config = { digiUser, digiPass };
               const b64Config = btoa(JSON.stringify(config));
 
               const host = window.location.host;
-              // تغییر اصلی اینجاست: استفاده مستقیم از stremio:// به جای replace
-              // این مشکل stremios:// را در دامنه‌های https حل می‌کند
               const installUrl = `stremio://${host}/${b64Config}/manifest.json`;
 
               window.location.href = installUrl;
             } else {
-              // شکست در لاگین -> نمایش خطا
               throw new Error(
                 result.message || "نام کاربری یا رمز عبور اشتباه است"
               );

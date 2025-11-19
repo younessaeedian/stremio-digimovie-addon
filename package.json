@@ -1,18 +1,22 @@
 {
-  "name": "stremio-ir-providers",
-  "version": "2.1.4",
+  "name": "stremio-digimovie-addon",
+  "version": "1.0.0",
+  "description": "افزونه استرمیو برای تماشای آنلاین از دیجی‌مووی با اشتراک شخصی",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "node --env-file=.env ./index.js",
-    "dev-proxy": "node --env-file=.env ./proxyServer.js",
-    "start": "node ./index.js",
-    "start-proxy": "node ./proxyServer.js"
+    "start": "node ./index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "stremio",
+    "addon",
+    "digimovie",
+    "vod",
+    "persian"
+  ],
+  "author": "Younes Saeedian <younessaeedian@gmail.com>",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.7.7",
     "cors": "^2.8.5",
