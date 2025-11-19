@@ -11,7 +11,7 @@ import Digimovie from "./sources/digimovie.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure Logger (Logs remain in English for better debugging)
+// Configure Logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || "info",
   format: winston.format.combine(
@@ -31,7 +31,6 @@ addon.use(errorHandler);
 
 const PORT = process.env.PORT || 7001;
 
-// Helper: Parse Config from Base64
 function parseConfig(configStr) {
   try {
     if (!configStr) return null;
@@ -43,27 +42,34 @@ function parseConfig(configStr) {
   }
 }
 
-// 1. Root Route (Config Page)
+// --- تغییر مهم: نرمال‌سازی پیشرفته ---
+function normalizeTitle(str) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .replace(/&/g, "and") // تبدیل & به and
+    .replace(/^the\s+/i, "") // حذف the از اول جمله
+    .replace(/^a\s+/i, "") // حذف a از اول جمله
+    .replace(/^an\s+/i, "") // حذف an از اول جمله
+    .replace(/[:\-\.]/g, " ") // حذف علائم نگارشی
+    .replace(/\s+/g, " ") // حذف فاصله‌های اضافه
+    .trim();
+}
+
 addon.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "config_page.html"));
 });
 
-// 2. Validation API (Check Credentials)
 addon.post("/validate", async (req, res) => {
   logger.debug("Validation request received.");
-
   const { digiUser, digiPass } = req.body;
 
   if (!digiUser || !digiPass) {
-    logger.warn("Validation failed: Missing username or password.");
-    // User-facing error (Persian)
     return res.status(400).json({
       success: false,
       message: "نام کاربری و رمز عبور الزامی است.",
     });
   }
-
-  logger.debug(`Attempting validation for user: ${digiUser}`);
 
   const digi = new Digimovie(
     process.env.DIGIMOVIE_BASEURL,
@@ -74,23 +80,16 @@ addon.post("/validate", async (req, res) => {
 
   try {
     const loginResult = await digi.login();
-
     if (loginResult === true) {
-      logger.info(`Validation successful for user: ${digiUser}`);
       return res.json({ success: true });
     } else {
-      logger.warn(
-        `Validation failed for user: ${digiUser} (Invalid credentials)`
-      );
-      // User-facing error (Persian)
       return res.json({
         success: false,
         message: "نام کاربری یا رمز عبور اشتباه است.",
       });
     }
   } catch (e) {
-    logger.error(`Unexpected error during validation: ${e.message}`);
-    // User-facing error (Persian)
+    logger.error(`Validation error: ${e.message}`);
     return res.status(500).json({
       success: false,
       message: "خطای داخلی سرور.",
@@ -98,24 +97,20 @@ addon.post("/validate", async (req, res) => {
   }
 });
 
-// 3. Configure Redirect
 addon.get("/:config?/configure", (req, res) => {
   res.sendFile(path.join(__dirname, "config_page.html"));
 });
 
-// 4. Manifest Generation
 addon.get("/:config?/manifest.json", function (req, res) {
   const config = parseConfig(req.params.config);
-
-  // User-facing description (Persian)
   const description = config
     ? "این افزونه با حساب کاربری شخصی شما تنظیم شده است."
-    : "دسترسی مستقیم به آرشیو دیجی‌مووی در Stremio. برای استفاده از این افزونه نیاز به اشتراک دارید. لطفاً برای تنظیم حساب کاربری دکمه Configure را بزنید.";
+    : "دسترسی مستقیم به آرشیو دیجی‌مووی در Stremio. برای استفاده از این افزونه نیاز به اشتراک دارید.";
 
   const manifest = {
-    id: "com.example.digimovie",
+    id: "com.example.digimoviez",
     version: "1.0.0",
-    name: "DigiMovie",
+    name: "DigiMoviez",
     description: description,
     logo: "https://raw.githubusercontent.com/MrMohebi/stremio-ir-providers/refs/heads/master/logo.png",
     catalogs: [],
@@ -135,7 +130,7 @@ addon.get("/:config?/manifest.json", function (req, res) {
   res.send(manifest);
 });
 
-// 5. Stream Handler
+// --- هندلر استریم ---
 addon.get("/:config/stream/:type/:id.json", async function (req, res) {
   const { type, id, config } = req.params;
   logger.debug(`Received stream request for: ${type} ${id}`);
@@ -143,15 +138,8 @@ addon.get("/:config/stream/:type/:id.json", async function (req, res) {
   const userConfig = parseConfig(config);
 
   if (!userConfig || !userConfig.digiUser || !userConfig.digiPass) {
-    logger.warn("Stream request failed: Missing or invalid configuration.");
-    // User-facing stream error (Persian)
     return res.send({
-      streams: [
-        {
-          title: "⚠️ لطفاً ابتدا تنظیمات را انجام دهید (دکمه Configure)",
-          url: "",
-        },
-      ],
+      streams: [{ title: "⚠️ لطفاً ابتدا تنظیمات را انجام دهید", url: "" }],
     });
   }
 
@@ -164,8 +152,16 @@ addon.get("/:config/stream/:type/:id.json", async function (req, res) {
       return res.send({ streams: [] });
     }
 
-    const title = metaData.meta.name;
-    logger.info(`Searching provider for title: "${title}"`);
+    const originalTitle = metaData.meta.name;
+
+    // حذف سال برای جستجو
+    const searchTitle = originalTitle.replace(/\s*\(\d{4}\).*$/, "").trim();
+    // نرمال‌سازی برای مقایسه (حذف The و ...)
+    const normalizedSearchTitle = normalizeTitle(searchTitle);
+
+    logger.info(
+      `Target: "${searchTitle}" (Norm: "${normalizedSearchTitle}") [${type}]`
+    );
 
     let allStreams = [];
 
@@ -179,8 +175,6 @@ addon.get("/:config/stream/:type/:id.json", async function (req, res) {
     try {
       const loggedIn = await digi.login();
       if (!loggedIn) {
-        logger.error("Provider login failed during stream request.");
-        // User-facing stream error (Persian)
         return res.send({
           streams: [
             { title: "❌ خطا در ورود (اطلاعات اکانت را بررسی کنید)", url: "" },
@@ -188,32 +182,70 @@ addon.get("/:config/stream/:type/:id.json", async function (req, res) {
         });
       }
 
-      const searchResults = await digi.search(title);
-      logger.debug(`Search results found: ${searchResults.length}`);
+      const searchResults = await digi.search(searchTitle);
+      logger.debug(`Found ${searchResults.length} potential matches.`);
 
       if (searchResults && searchResults.length > 0) {
-        const match = searchResults[0];
-        const movieDetails = await digi.getMovieData(type, match.id);
+        // --- Scoring System ---
+        const scoredResults = searchResults.map((item) => {
+          let score = 0;
 
-        if (movieDetails) {
-          const links = digi.getLinks(type, id, movieDetails);
-          links.forEach((link) => {
-            // Translation for "Link" or "Stream" if title is missing
-            link.title = `[DigiMovie] ${link.title || "لینک پخش"}`;
+          // نرمال‌سازی نام آیتم پیدا شده
+          const normalizedItemName = normalizeTitle(item.name);
 
-            if (
-              process.env.PROXY_ENABLE === "true" ||
-              process.env.PROXY_ENABLE === "1"
-            ) {
-              link.url = `${process.env.PROXY_URL}/${
-                process.env.PROXY_PATH
-              }?url=${encodeURIComponent(link.url)}`;
-            }
-          });
-          allStreams.push(...links);
+          // 1. Type Match (Critical)
+          if (item.type === type) {
+            score += 100;
+          } else {
+            score -= 50;
+          }
+
+          // 2. Name Match
+          if (normalizedItemName === normalizedSearchTitle) {
+            score += 60; // Exact match (ignoring "The", "&", etc.)
+          } else if (normalizedItemName.startsWith(normalizedSearchTitle)) {
+            score += 20; // Starts with
+          } else if (normalizedItemName.includes(normalizedSearchTitle)) {
+            score += 10; // Includes
+          }
+
+          // دیباگ برای دیدن امتیازدهی
+          // logger.debug(`Scoring "${item.name}" -> Norm: "${normalizedItemName}" = ${score}`);
+
+          return { ...item, score };
+        });
+
+        // Sort by score
+        scoredResults.sort((a, b) => b.score - a.score);
+
+        const bestMatch = scoredResults[0];
+
+        logger.info(`Winner: "${bestMatch.name}" (Score: ${bestMatch.score})`);
+
+        if (bestMatch.score > 0) {
+          const movieDetails = await digi.getMovieData(type, bestMatch.id);
+
+          if (movieDetails) {
+            const links = digi.getLinks(type, id, movieDetails);
+            links.forEach((link) => {
+              link.title = `[DigiMovie] ${link.title || "لینک پخش"}`;
+
+              if (
+                process.env.PROXY_ENABLE === "true" ||
+                process.env.PROXY_ENABLE === "1"
+              ) {
+                link.url = `${process.env.PROXY_URL}/${
+                  process.env.PROXY_PATH
+                }?url=${encodeURIComponent(link.url)}`;
+              }
+            });
+            allStreams.push(...links);
+          }
+        } else {
+          logger.warn(`No good match found. Best score was ${bestMatch.score}`);
         }
       } else {
-        logger.info(`No results found in provider for: "${title}"`);
+        logger.info(`No results found in provider for: "${searchTitle}"`);
       }
     } catch (err) {
       logger.error(`Error processing stream provider: ${err.message}`);
@@ -226,13 +258,10 @@ addon.get("/:config/stream/:type/:id.json", async function (req, res) {
   }
 });
 
-// Health Check
 addon.get("/health", (req, res) => res.send("OK"));
 
-// Start Server
 addon.listen(PORT, function () {
   logger.info("---------------------------------------------------");
   logger.info(`Server running on port ${PORT}`);
-  logger.info(`Access manifest at: http://127.0.0.1:${PORT}/manifest.json`);
   logger.info("---------------------------------------------------");
 });
