@@ -136,7 +136,10 @@
   <body>
     <div class="login-container">
       <div class="logo-area">
-        <img src="images/Integration.webp" alt="DigiMovie Logo" />
+        <img
+          src="https://raw.githubusercontent.com/younessaeedian/stremio-digimovie-addon/refs/heads/main/images/Integration.webp"
+          alt="DigiMovie Logo"
+        />
       </div>
 
       <h2>اتصال به حساب کاربری</h2>
@@ -152,6 +155,7 @@
             id="digi_user"
             placeholder="مثال: user@example.com"
             required
+            autocomplete="username"
           />
         </div>
 
@@ -162,6 +166,7 @@
             id="digi_pass"
             placeholder="••••••••"
             required
+            autocomplete="current-password"
           />
         </div>
 
@@ -225,12 +230,11 @@
               // موفقیت آمیز -> ریدارکت به استریمیو
               const config = { digiUser, digiPass };
               const b64Config = btoa(JSON.stringify(config));
-              const protocol = window.location.protocol.replace(
-                "http",
-                "stremio"
-              );
+
               const host = window.location.host;
-              const installUrl = `${protocol}//${host}/${b64Config}/manifest.json`;
+              // تغییر اصلی اینجاست: استفاده مستقیم از stremio:// به جای replace
+              // این مشکل stremios:// را در دامنه‌های https حل می‌کند
+              const installUrl = `stremio://${host}/${b64Config}/manifest.json`;
 
               window.location.href = installUrl;
             } else {
