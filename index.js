@@ -112,7 +112,7 @@ addon.get("/:config?/manifest.json", function (req, res) {
     version: "1.0.0",
     name: "DigiMoviez",
     description: description,
-    logo: "https://raw.githubusercontent.com/MrMohebi/stremio-ir-providers/refs/heads/master/logo.png",
+    logo: "https://raw.githubusercontent.com/younessaeedian/stremio-digimovie-addon/refs/heads/main/logo.png",
     catalogs: [],
     resources: [
       {
