@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ورود به حساب کاربری | DigiMovie Addon</title>
+    <link
+      href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      /* استایل‌ها بدون تغییر برای حفظ ظاهر زیبای شما */
+      input,
+      button,
+      select,
+      textarea {
+        font-family: "Vazirmatn", sans-serif;
+      }
+      :root {
+        --bg-color: #121212;
+        --box-bg: #1f1f1f;
+        --primary: #eb830a;
+        --primary-hover: #c9710b;
+        --text-main: #ffffff;
+        --text-muted: #aaaaaa;
+        --border: #333333;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Vazirmatn", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-image: radial-gradient(
+          circle at center,
+          #1e1e1e 0%,
+          #000000 100%
+        );
+      }
+      .login-container {
+        background-color: var(--box-bg);
+        width: 100%;
+        max-width: 400px;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border);
+        text-align: center;
+      }
+      .logo-area {
+        margin-bottom: 30px;
+      }
+      .logo-area img {
+        max-width: 256px;
+        height: auto;
+      }
+      h2 {
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      p.sub-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 30px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+        text-align: right;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #2b2b2b;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+      input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background-color: #333;
+        box-shadow: 0 0 0 3px rgba(235, 131, 10, 0.1);
+      }
+      button.submit-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: #ffffff;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+      }
+      button.submit-btn:hover {
+        background-color: var(--primary-hover);
+      }
+      button.submit-btn:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+        color: #aaa;
+      }
+      .footer-note {
+        margin-top: 25px;
+        font-size: 0.8rem;
+        color: #555;
+        line-height: 1.5;
+      }
+      .error-msg {
+        color: #ff4d4d;
+        font-size: 0.9rem;
+        margin-top: 15px;
+        display: none;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="logo-area">
+        <img src="images/Integration.webp" alt="DigiMovie Logo" />
+      </div>
+
+      <h2>اتصال به حساب کاربری</h2>
+      <p class="sub-text">
+        برای استفاده از افزونه، وارد اکانت دیجی موویز خود شوید
+      </p>
+
+      <form id="configForm">
+        <div class="form-group">
+          <label for="digi_user">نام کاربری یا ایمیل</label>
+          <input
+            type="text"
+            id="digi_user"
+            placeholder="مثال: user@example.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="digi_pass">رمز عبور</label>
+          <input
+            type="password"
+            id="digi_pass"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <div id="errorDisplay" class="error-msg"></div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          ورود به حساب کاربری
+        </button>
+      </form>
+
+      <div class="footer-note">
+        <span style="font-size: 1.2em; vertical-align: sub">🔒</span>
+        اطلاعات ورود شما به صورت رمزنگاری شده در لینک نصب ذخیره می‌شود.
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("configForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const digiUser = document.getElementById("digi_user").value.trim();
+          const digiPass = document.getElementById("digi_pass").value.trim();
+          const btn = document.getElementById("submitBtn");
+          const errorDisplay = document.getElementById("errorDisplay");
+
+          // پاک کردن خطاهای قبلی
+          errorDisplay.style.display = "none";
+          errorDisplay.innerText = "";
+
+          if (!digiUser || !digiPass) {
+            alert("لطفاً نام کاربری و رمز عبور را وارد کنید.");
+            return;
+          }
+
+          btn.innerText = "در حال بررسی...";
+          btn.disabled = true;
+
+          try {
+            console.log("Sending validation request...");
+            const response = await fetch("/validate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ digiUser, digiPass }),
+            });
+
+            console.log("Response status:", response.status);
+
+            // اگر سرور پاسخ ندهد یا خطای 404 بدهد
+            if (!response.ok) {
+              throw new Error(
+                `خطای سرور: ${response.status} ${response.statusText}`
+              );
+            }
+
+            const result = await response.json();
+            console.log("Result:", result);
+
+            if (result.success) {
+              // موفقیت آمیز -> ریدارکت به استریمیو
+              const config = { digiUser, digiPass };
+              const b64Config = btoa(JSON.stringify(config));
+              const protocol = window.location.protocol.replace(
+                "http",
+                "stremio"
+              );
+              const host = window.location.host;
+              const installUrl = `${protocol}//${host}/${b64Config}/manifest.json`;
+
+              window.location.href = installUrl;
+            } else {
+              // شکست در لاگین -> نمایش خطا
+              throw new Error(
+                result.message || "نام کاربری یا رمز عبور اشتباه است"
+              );
+            }
+          } catch (err) {
+            console.error(err);
+            errorDisplay.innerText = err.message;
+            errorDisplay.style.display = "block";
+            btn.innerText = "ورود به حساب کاربری";
+            btn.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>
