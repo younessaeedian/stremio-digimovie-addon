@@ -1,13 +1,9 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/MrMohebi/stremio-ir-providers/refs/heads/master/logo.png" alt="Logo" width="150"/>
+  <img src="https://raw.githubusercontent.com/younessaeedian/stremio-digimovie-addon/refs/heads/main/logo.png" alt="Logo" width="150"/>
   
-  # افزونه دیجی‌مووی برای استرمیو (DigiMovie Provider)
+  # افزونه دیجی‌موویز برای استرمیو (DigiMoviez)
   
   **تماشای مستقیم فیلم و سریال‌های سایت دیجی‌مووی در Stremio با حساب شخصی**
-
-[![Stremio](https://img.shields.io/badge/Stremio-Addon-purple)](https://www.stremio.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-green)](https://nodejs.org/)
-[![License](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
 </div>
 
@@ -17,7 +13,7 @@
 
 این پروژه یک افزونه (Addon) متن‌باز برای نرم‌افزار **Stremio** است که به عنوان یک واسط بین استرمیو و سایت **DigiMoviez** عمل می‌کند.
 
-با استفاده از این افزونه، می‌توانید با وارد کردن اطلاعات حساب کاربری خود (نام کاربری و رمز عبور اشتراک دیجی‌مووی)، فیلم‌ها و سریال‌ها را مستقیماً با بالاترین سرعت و کیفیت‌های مختلف در استرمیو تماشا کنید.
+**نکته مهم:** برای استفاده از این افزونه، شما حتماً باید **حساب کاربری دارای اشتراک فعال** در سایت دیجی‌موویز داشته باشید. در هنگام پیکربندی افزونه، باید نام کاربری و رمز عبور این حساب را وارد کنید تا افزونه بتواند لینک‌های دانلود را برای شما دریافت و نمایش دهد.
 
 ### ✨ ویژگی‌ها
 
@@ -29,7 +25,7 @@
 
 ---
 
-## 🚀 راهنمای نصب و راه‌اندازی
+## 🚀 راهنمای نصب و راه‌اندازی سرور
 
 شما می‌توانید این پروژه را روی سیستم شخصی (Localhost) یا سرور مجازی (VPS) اجرا کنید.
 
@@ -37,13 +33,13 @@
 
 - [Node.js](https://nodejs.org/) (نسخه 18 یا بالاتر)
 - [Git](https://git-scm.com/)
-- یک اکانت فعال در سایت DigiMoviez
+- یک اکانت با **اشتراک فعال** در سایت DigiMoviez
 
 ### ۱. دریافت پروژه
 
 ابتدا مخزن را کلون کنید و وارد پوشه پروژه شوید:
 
 ```bash
-git clone [https://github.com/YOUR_USERNAME/stremio-ir-providers.git](https://github.com/YOUR_USERNAME/stremio-ir-providers.git)
-cd stremio-ir-providers
+git clone [https://github.com/younessaeedian/stremio-digimovie-addon.git](https://github.com/younessaeedian/stremio-digimovie-addon.git)
+cd stremio-digimovie-addon
 ```
