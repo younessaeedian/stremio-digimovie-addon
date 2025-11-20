@@ -104,9 +104,8 @@ addon.get("/:config?/configure", (req, res) => {
 addon.get("/:config?/manifest.json", function (req, res) {
   const config = parseConfig(req.params.config);
   const description = config
-    ? "این افزونه با حساب کاربری شخصی شما تنظیم شده است."
-    : "دسترسی مستقیم به آرشیو دیجی‌مووی در Stremio. برای استفاده از این افزونه نیاز به اشتراک دارید.";
-
+    ? "حساب کاربری شما با موفقیت متصل شد."
+    : "دسترسی به آرشیو فیلم و سریال دیجی‌موویز. برای اتصال حساب اشتراکی خود، دکمه پیکربندی را انتخاب کنید.";
   const manifest = {
     id: "com.example.digimoviez",
     version: "1.0.0",

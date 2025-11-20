@@ -2,229 +2,346 @@
 <html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ورود به حساب کاربری | DigiMovie Addon</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>پیکربندی افزونه دیجی‌موویز</title>
     <link
       href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css"
       rel="stylesheet"
       type="text/css"
     />
     <style>
+      :root {
+        --bg-color: #121212;
+        --box-bg: #1a1a1a;
+        --primary: #eb830a;
+        --primary-hover: #ff951c;
+        --text-main: #eeeeee;
+        --text-muted: #a0a0a0;
+        --border: #333333;
+        --error-bg: rgba(255, 77, 77, 0.1);
+        --error-text: #ff6b6b;
+        --main-font: "Vazirmatn", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: var(--main-font);
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
       input,
       button,
       select,
       textarea {
-        font-family: "Vazirmatn", sans-serif;
+        font-family: var(--main-font);
       }
-      :root {
-        --bg-color: #121212;
-        --box-bg: #1f1f1f;
-        --primary: #eb830a;
-        --primary-hover: #c9710b;
-        --text-main: #ffffff;
-        --text-muted: #aaaaaa;
-        --border: #333333;
-        --main-font: "Vazirmatn", sans-serif;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Vazirmatn", sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-main);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-image: radial-gradient(
-          circle at center,
-          #1e1e1e 0%,
-          #000000 100%
-        );
-        flex-direction: column; /* برای قرارگیری فوتر در پایین باکس */
-      }
-      .login-container {
-        background-color: var(--box-bg);
+
+      .container {
         width: 100%;
         max-width: 400px;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .login-box {
+        background-color: var(--box-bg);
+        width: 100%;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
         border: 1px solid var(--border);
         text-align: center;
-        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
       }
+
       .logo-area {
-        margin-bottom: 30px;
+        margin-bottom: 1.5rem;
       }
       .logo-area img {
-        max-width: 256px;
+        max-width: 160px;
+        width: 100%;
         height: auto;
       }
+
       h2 {
-        margin-bottom: 10px;
-        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        font-weight: 800;
         color: var(--text-main);
+        font-size: 1.4rem;
       }
       p.sub-text {
         color: var(--text-muted);
         font-size: 0.9rem;
-        margin-bottom: 30px;
+        margin-bottom: 2rem;
+        line-height: 1.6;
       }
+
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
         text-align: right;
       }
       label {
         display: block;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
         color: var(--text-muted);
+        font-weight: 500;
       }
+
       input {
         width: 100%;
-        padding: 12px 15px;
-        background-color: #2b2b2b;
+        padding: 14px 16px;
+        background-color: #252525;
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 12px;
         color: #fff;
         font-size: 1rem;
-        box-sizing: border-box;
-        transition: all 0.3s ease;
+        transition: border-color 0.2s ease;
       }
       input:focus {
         outline: none;
         border-color: var(--primary);
-        background-color: #333;
-        box-shadow: 0 0 0 3px rgba(235, 131, 10, 0.1);
-      }
-      button.submit-btn {
-        width: 100%;
-        padding: 14px;
-        background-color: var(--primary);
-        color: #ffffff;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        margin-top: 10px;
-      }
-      button.submit-btn:hover {
-        background-color: var(--primary-hover);
-      }
-      button.submit-btn:disabled {
-        background-color: #555;
-        cursor: not-allowed;
-        color: #aaa;
-      }
-      .footer-note {
-        margin-top: 25px;
-        font-size: 0.8rem;
-        color: #555;
-        line-height: 1.5;
-      }
-      .error-msg {
-        color: #ff4d4d;
-        font-size: 0.9rem;
-        margin-top: 15px;
-        display: none;
-        background: rgba(255, 0, 0, 0.1);
-        padding: 10px;
-        border-radius: 5px;
+        background-color: #2a2a2a;
       }
 
-      /* استایل امضای توسعه‌دهنده */
+      .btn {
+        width: 100%;
+        padding: 15px;
+        background-color: var(--primary);
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        display: block;
+        text-decoration: none;
+        margin-top: 1.5rem;
+      }
+      .btn:hover {
+        background-color: var(--primary-hover);
+      }
+      .btn:disabled {
+        background-color: #444;
+        cursor: not-allowed;
+        color: #888;
+      }
+
+      .btn-secondary {
+        background-color: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        margin-top: 12px;
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+      .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border-color: #555;
+      }
+
+      .footer-note {
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .error-msg {
+        color: var(--error-text);
+        background: var(--error-bg);
+        font-size: 0.85rem;
+        margin-top: 1rem;
+        padding: 12px;
+        border-radius: 10px;
+        display: none;
+        border: 1px solid rgba(255, 107, 107, 0.2);
+        text-align: right;
+      }
+
+      /* استایل یکدست برای متن کردیت */
       .developer-credit {
+        margin-top: 2.5rem;
         font-size: 0.85rem;
         color: #666;
-        margin-top: 10px;
-        opacity: 0.8;
-        transition: opacity 0.3s;
+        text-align: center;
+        font-family: sans-serif;
+        letter-spacing: 0.5px;
       }
-      .developer-credit:hover {
-        opacity: 1;
-      }
+
+      /* لینک دقیقاً همرنگ و هم‌سبک متن باشد */
       .developer-credit a {
-        color: #eb830a;
+        color: inherit; /* ارث‌بری رنگ از والد */
         text-decoration: none;
-        font-weight: bold;
+        font-weight: normal;
+        border: none;
+        transition: opacity 0.2s;
       }
+
+      /* فقط در هاور کمی تغییر کند تا معلوم شود لینک است */
+      .developer-credit a:hover {
+        opacity: 0.8;
+      }
+
       .developer-credit .heart {
         color: #e25555;
         display: inline-block;
-        animation: heartbeat 1.5s infinite;
+        margin: 0 2px;
       }
 
-      @keyframes heartbeat {
-        0%,
-        100% {
-          transform: scale(1);
+      /* بخش نتیجه */
+      #result-section {
+        display: none;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
         }
-        50% {
-          transform: scale(1.2);
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 15px;
+        }
+        .login-box {
+          padding: 2rem 1.5rem;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+        .logo-area img {
+          max-width: 140px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="login-container">
-      <div class="logo-area">
-        <img
-          src="https://raw.githubusercontent.com/younessaeedian/stremio-digimovie-addon/refs/heads/main/images/Integration.webp"
-          alt="DigiMovie Logo"
-        />
-      </div>
-
-      <h2>اتصال به حساب کاربری</h2>
-      <p class="sub-text">
-        برای استفاده از افزونه، وارد اکانت دیجی موویز خود شوید
-      </p>
-
-      <form id="configForm">
-        <div class="form-group">
-          <label for="digi_user">نام کاربری یا ایمیل</label>
-          <input
-            type="text"
-            id="digi_user"
-            placeholder="مثال: user@example.com"
-            required
-            autocomplete="username"
+    <div class="container">
+      <div class="login-box">
+        <div class="logo-area">
+          <img
+            src="https://raw.githubusercontent.com/younessaeedian/stremio-digimovie-addon/refs/heads/main/images/Integration.webp"
+            alt="DigiMovie Logo"
           />
         </div>
 
-        <div class="form-group">
-          <label for="digi_pass">رمز عبور</label>
-          <input
-            type="password"
-            id="digi_pass"
-            placeholder="••••••••"
-            required
-            autocomplete="current-password"
-          />
+        <div id="login-section">
+          <h2>اتصال حساب دیجی‌موویز</h2>
+          <p class="sub-text">
+            برای دسترسی به آرشیو، لطفاً وارد حساب کاربری خود شوید.
+          </p>
+
+          <form id="configForm">
+            <div class="form-group">
+              <label for="digi_user">نام کاربری یا ایمیل</label>
+              <input
+                type="text"
+                id="digi_user"
+                name="username"
+                required
+                autocomplete="username"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="digi_pass">رمز عبور</label>
+              <input
+                type="password"
+                id="digi_pass"
+                name="password"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+
+            <div id="errorDisplay" class="error-msg"></div>
+
+            <button type="submit" class="btn" id="submitBtn">
+              تایید و ورود
+            </button>
+          </form>
+
+          <div class="footer-note">
+            <span style="font-size: 1.1em; vertical-align: middle">🔒</span>
+            اطلاعات شما به صورت امن و رمزنگاری شده فقط در لینک نصب استفاده
+            می‌شود.
+          </div>
         </div>
 
-        <div id="errorDisplay" class="error-msg"></div>
+        <div id="result-section">
+          <h2>حساب متصل شد! 🎉</h2>
+          <p class="sub-text" style="margin-bottom: 2rem">
+            افزونه آماده است. برای فعال‌سازی در استرمیو دکمه زیر را بزنید.
+          </p>
 
-        <button type="submit" class="submit-btn" id="submitBtn">
-          ورود به حساب کاربری
-        </button>
-      </form>
+          <a id="installLinkBtn" href="#" class="btn">نصب افزونه</a>
 
-      <div class="footer-note">
-        <span style="font-size: 1.2em; vertical-align: sub">🔒</span>
-        اطلاعات ورود شما به صورت رمزنگاری شده در لینک نصب ذخیره می‌شود.
+          <button id="logoutBtn" class="btn btn-secondary">خروج از حساب</button>
+        </div>
       </div>
-    </div>
 
-    <div class="developer-credit">
-      توسعه داده شده با <span class="heart">❤️</span> توسط
-      <a href="https://github.com/younessaeedian" target="_blank"
-        >یونس سعیدیان</a
-      >
+      <div class="developer-credit">
+        Developed with <span class="heart">❤️</span> by
+        <a href="https://github.com/younessaeedian" target="_blank"
+          >Younes Saeedian</a
+        >
+      </div>
     </div>
 
     <script>
+      const STORAGE_KEY = "digimovie_addon_config";
+      const loginSection = document.getElementById("login-section");
+      const resultSection = document.getElementById("result-section");
+      const installBtn = document.getElementById("installLinkBtn");
+      const submitBtn = document.getElementById("submitBtn");
+      const errorDisplay = document.getElementById("errorDisplay");
+
+      function showInstallSection(configB64) {
+        const host = window.location.host;
+        const installUrl = `stremio://${host}/${configB64}/manifest.json`;
+
+        installBtn.href = installUrl;
+        loginSection.style.display = "none";
+        resultSection.style.display = "block";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedConfig = localStorage.getItem(STORAGE_KEY);
+        if (savedConfig) {
+          showInstallSection(savedConfig);
+        }
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      });
+
       document
         .getElementById("configForm")
         .addEventListener("submit", async function (e) {
@@ -232,19 +349,16 @@
 
           const digiUser = document.getElementById("digi_user").value.trim();
           const digiPass = document.getElementById("digi_pass").value.trim();
-          const btn = document.getElementById("submitBtn");
-          const errorDisplay = document.getElementById("errorDisplay");
 
           errorDisplay.style.display = "none";
           errorDisplay.innerText = "";
 
           if (!digiUser || !digiPass) {
-            alert("لطفاً نام کاربری و رمز عبور را وارد کنید.");
             return;
           }
 
-          btn.innerText = "در حال بررسی...";
-          btn.disabled = true;
+          submitBtn.innerText = "در حال بررسی...";
+          submitBtn.disabled = true;
 
           try {
             const response = await fetch("/validate", {
@@ -254,9 +368,7 @@
             });
 
             if (!response.ok) {
-              throw new Error(
-                `خطای سرور: ${response.status} ${response.statusText}`
-              );
+              throw new Error(`خطای ارتباط با سرور (${response.status})`);
             }
 
             const result = await response.json();
@@ -265,21 +377,24 @@
               const config = { digiUser, digiPass };
               const b64Config = btoa(JSON.stringify(config));
 
-              const host = window.location.host;
-              const installUrl = `stremio://${host}/${b64Config}/manifest.json`;
+              localStorage.setItem(STORAGE_KEY, b64Config);
+              showInstallSection(b64Config);
 
-              window.location.href = installUrl;
+              try {
+                window.location.href = installBtn.href;
+              } catch (e) {}
             } else {
               throw new Error(
-                result.message || "نام کاربری یا رمز عبور اشتباه است"
+                result.message || "نام کاربری یا رمز عبور صحیح نیست."
               );
             }
           } catch (err) {
             console.error(err);
             errorDisplay.innerText = err.message;
             errorDisplay.style.display = "block";
-            btn.innerText = "ورود به حساب کاربری";
-            btn.disabled = false;
+
+            submitBtn.innerText = "تایید و ورود";
+            submitBtn.disabled = false;
           }
         });
     </script>
