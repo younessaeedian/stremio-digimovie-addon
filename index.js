@@ -107,7 +107,7 @@ addon.get("/:config?/manifest.json", function (req, res) {
     ? "حساب کاربری شما با موفقیت متصل شد."
     : "دسترسی به آرشیو فیلم و سریال دیجی‌موویز. برای اتصال حساب اشتراکی خود، دکمه پیکربندی را انتخاب کنید.";
   const manifest = {
-    id: "com.example.digimoviez",
+    id: "com.digimoviez.addon",
     version: "1.0.0",
     name: "DigiMoviez",
     description: description,
